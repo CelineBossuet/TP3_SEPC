@@ -1,5 +1,6 @@
 #include <time.h>
 #include <assert.h>
+#include <pthread.h>
 #include "ensivorbis.h"
 #include "ensitheora.h"
 #include "stream_common.h"
@@ -65,24 +66,31 @@ struct streamstate *getStreamState(ogg_sync_state *pstate, ogg_page *ppage,
 	assert(res == 0);
 
 	// proteger l'accès à la hashmap
-
+	//printf("protection accés hashmap ifyes \n");
+	pthread_mutex_lock(&mut_hashmap);
 	if (type == TYPE_THEORA)
 	    HASH_ADD_INT( theorastrstate, serial, s );
 	else
 	    HASH_ADD_INT( vorbisstrstate, serial, s );
+	pthread_mutex_unlock(&mut_hashmap);
+
 
     } else {
 	// proteger l'accès à la hashmap
+	//printf("protection accés hasmap ifnot \n");
+	pthread_mutex_lock(&mut_hashmap);
+
 
 	if (type == TYPE_THEORA)
 	    HASH_FIND_INT( theorastrstate, & serial, s );
 	else	
 	    HASH_FIND_INT( vorbisstrstate, & serial, s );    
+	pthread_mutex_unlock(&mut_hashmap);
 
 	assert(s != NULL);
     }
     assert(s != NULL);
-
+	
     return s;
 }
 
@@ -141,7 +149,11 @@ int decodeAllHeaders(int respac, struct streamstate *s, enum streamtype type) {
 	    if (type == TYPE_THEORA) {
 		// lancement du thread gérant l'affichage (draw2SDL)
 	        // inserer votre code ici !!
-
+			printf("creation du thread de l'affichage \n");
+			//pthread_t affichage;
+			int a = pthread_create(&affichage, NULL, draw2SDL, &s->serial);
+			assert(a==0);
+			printf("initialisation du thread affichage faite \n");
 		assert(res == 0);		     
 	    }
 	}

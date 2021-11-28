@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <SDL2/SDL.h>
+#include <pthread.h>
 #include "ensitheora.h"
 #include "synchro.h"
 #include "stream_common.h"
@@ -20,7 +21,7 @@ SDL_Rect rect = {};
 struct streamstate *theorastrstate=NULL;
 
 void *draw2SDL(void *arg) {
-    int serial = (int) (long long int) arg;
+    int serial = *((int *)arg);
     struct streamstate *s= NULL;
     SDL_Texture* texture = NULL;
 
@@ -62,11 +63,17 @@ void *draw2SDL(void *arg) {
 
     /* Protéger l'accès à la hashmap */
 
+	printf("protection de la hashmap theora \n");
+	pthread_mutex_lock(&mut_hashmap);
+
+
     HASH_FIND_INT( theorastrstate, &serial, s );
 
-
+	pthread_mutex_unlock(&mut_hashmap);
+	
 
     assert(s->strtype == TYPE_THEORA);
+
     
     while(! fini) {
 	// récupérer les évenements de fin

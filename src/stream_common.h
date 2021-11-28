@@ -5,6 +5,7 @@
 
 extern bool fini;
 extern pthread_t theora2sdlthread;
+extern pthread_t affichage;
 extern struct timespec datedebut;
 
 int msFromStart();
