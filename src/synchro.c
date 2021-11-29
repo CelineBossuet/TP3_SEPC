@@ -45,7 +45,7 @@ void debutConsommerTexture() {
 
 void finConsommerTexture() {
     pthread_mutex_unlock(&matmut);
-    pthread_cond_broadcast(&conso); //libération de tous les consos possibles
+    pthread_cond_broadcast(&depo); //libération de tous les consos possibles
 }
 
 

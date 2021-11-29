@@ -151,7 +151,7 @@ int decodeAllHeaders(int respac, struct streamstate *s, enum streamtype type) {
 	        // inserer votre code ici !!
 			printf("creation du thread de l'affichage \n");
 			//pthread_t affichage;
-			int a = pthread_create(&affichage, NULL, draw2SDL, &s->serial);
+			int a = pthread_create(&theora2sdlthread, NULL, draw2SDL, &s->serial);
 			assert(a==0);
 			printf("initialisation du thread affichage faite \n");
 		assert(res == 0);		     

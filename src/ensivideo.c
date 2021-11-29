@@ -8,7 +8,7 @@
 #include "oggstream.h"
 #include "synchro.h"
 
-pthread_t affichage;
+pthread_t theora2sdlthread;
 
 
 int main(int argc, char *argv[]) {
@@ -39,8 +39,10 @@ int main(int argc, char *argv[]) {
 
     
     // wait audio thread
-    printf("attente de l'audio \n");
+    printf("attente de l'audio ...");
+    //fflush(stdout);
     pthread_join(son, NULL);
+    printf("fait ! \n");
 
     // 1 seconde de garde pour le son,
     sleep(1);
@@ -48,13 +50,13 @@ int main(int argc, char *argv[]) {
     // tuer les deux threads videos si ils sont bloqués
     printf("on tue les deux threads video \n");
     pthread_cancel(video);
-    pthread_cancel(affichage);
+    pthread_cancel(theora2sdlthread);
 
 
     // attendre les 2 threads videos
     printf("on attend les deux thread video \n");
     pthread_join(video, NULL);
-    pthread_join(affichage, NULL);
+    pthread_join(theora2sdlthread, NULL);
 
     
     exit(EXIT_SUCCESS);    
